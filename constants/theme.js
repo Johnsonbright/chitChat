@@ -6,7 +6,7 @@ export const theme = {
     darkLight: "#F0F2F5", // Light grayish-blue for soft backgrounds (modern UI feel)
     gray: "#B0B3B8", // Neutral gray for borders and subtle text
 
-    text: "#111111", // Dark text for readability on white background
+    text: "#000000", // Dark text for readability on white background
     textLight: "#666666", // Muted text for descriptions or secondary content
     textDark: "#000000", // Pure black for maximum emphasis (titles, headers)
 
