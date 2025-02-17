@@ -5,8 +5,10 @@ import { StatusBar } from 'expo-status-bar'
 import { wp,hp } from '../helpers/common'
 import { theme } from '../constants/theme'
 import Button from '../components/Button'
+import { useRouter } from 'expo-router'
 
 const welcome = () => {
+  const router = useRouter();
   return (
     <Screenwrapper bg="white">
       <StatusBar style="dark"/>
@@ -14,7 +16,7 @@ const welcome = () => {
         {/* welcome image */}
         <Image style={styles.welcomeImage} resizeMode='contain' source={require("../assets/images/welcome.png")}/>
         {/* title */}
-         <View style={{gap:20}}>
+         <View style={{gap:15}}>
           <Text style={styles.title}>ChitChat 🤖 </Text>
           <Text style={styles.punchline}>Connect. Share. Vibe.!</Text>
          </View>
@@ -23,13 +25,13 @@ const welcome = () => {
             <Button
              title="Explore ChitChat"
              buttonStyle={{marginHorizontal: wp(3)}}
-             onPress={() => {}}
+             onPress={() => router.push("signup")}
             />  
             <View style={styles.bottomTextContainer}>
                <Text style={styles.loginText}>
                   Already have an account!
                </Text>
-                <Pressable>
+                <Pressable onPress={() => router.push("login")}>
                    <Text style={[styles.loginText, {color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold}]}> Log In</Text>
                 </Pressable>
             </View>
