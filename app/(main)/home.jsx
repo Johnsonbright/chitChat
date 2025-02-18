@@ -1,30 +1,59 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Screenwrapper from '../../components/Screenwrapper'
 import Button from '../../components/Button'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
+import { theme } from '../../constants/theme'
+import { hp,wp } from '../../helpers/common'
+import Icon from "../../assets/icons"
+import { useRouter } from 'expo-router'
+import Avatar from '../../components/Avatar'
+
 
 
 
 
 
 const Home = () => {
-
+const router = useRouter()
 const {user, setAuth} = useAuth();
 console.log("🚀 ~ Home ~ user:", user)
 
-  const onLogout = async() => {
+  // const onLogout = async() => {
  
-    const {error} = await supabase.auth.signOut()
-    if(error) {
-      Alert.alert("Sign Out", error.message)
-    }
-  }
+  //   const {error} = await supabase.auth.signOut()
+  //   if(error) {
+  //     Alert.alert("Sign Out", error.message)
+  //   }
+  // }
   return (
-     <Screenwrapper>
-       <Text>Home</Text>
-       <Button title ="Log out" onPress={onLogout}/>
+     <Screenwrapper bg="#E3E4E5">
+       <View style={styles.container} >
+           {/* header */}
+            <View style={styles.header}>
+               <Text style={styles.title}>ChitChat 💬</Text>
+               <View style={styles.icons}>
+                  <Pressable onPress={() => router.push("notifications")}>
+                     <Icon name="heart" size={hp(3.2)} strokeWidth={2} color={theme.colors.text}/>
+                  </Pressable>
+                  <Pressable onPress={() => router.push("newPosts")}>
+                     <Icon name="plus" size={hp(3.2)} strokeWidth={2} color={theme.colors.text}/>
+                  </Pressable>
+                  <Pressable  onPress={() => router.push("profile")}>
+                     <Avatar
+                      uri= {user?.image}
+                      size={hp(4.3)}
+                      rounded={theme.radius.sm}
+                      style={{borderWidth:2}}
+                     />
+                  </Pressable>
+               </View>
+            </View>
+       </View>
+        
+
+       {/* <Button title ="Log out" onPress={onLogout}/> */}
      </Screenwrapper>
      
    
@@ -84,8 +113,11 @@ const styles = StyleSheet.create({
       fontWeight: theme.fonts.bold,
   },
   title: {
-      color: theme.colors.text,
-      fontSize: hp(3.2),
-      fontWeight: theme.fonts.bold,
+    color: 'rgba(0, 5, 102, 1)', 
+    textShadowColor: 'rgba(192, 192, 192, 1)', 
+    textShadowOffset: { width: -2, height: 0 }, 
+    textShadowRadius: 5, 
+    fontSize: hp(3.2),
+    fontWeight: theme.fonts.bold,
   },
 });
