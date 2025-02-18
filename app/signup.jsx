@@ -9,18 +9,39 @@ import { useRouter } from 'expo-router'
 import { hp,wp } from '../helpers/common'
 import Input from '../components/Input'
 import Button from '../components/Button'
+import { supabase } from '../lib/supabase'
 
 const signup = () => {
   const router = useRouter()
-  const UsernameRef = useRef("")
+  const usernameRef = useRef("")
   const emailRef = useRef("")
   const passwordRef = useRef("")
   const [loading, setLoading] = useState(false)
 
-  const onSubmit = () => {
-    if(!emailRef.current || !passwordRef.current || UsernameRef.current ) {
+  const onSubmit = async () => {
+    if(!emailRef.current || !passwordRef.current ) {
       Alert.alert("Sign Up", "Please register")
       return;
+    }
+
+    let username = usernameRef.current.trim();
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+
+    setLoading(true)
+    const {data: {session}, error} = await supabase.auth.signUp({
+      email,
+      password, 
+      options:{
+        data: {
+          username
+        }
+      }
+    })
+     setLoading(false)
+   
+    if(error) {
+      Alert.alert("Sign Up", error.message)
     }
   }
 
@@ -43,7 +64,7 @@ const signup = () => {
              </Text>
                <Input icon ={<Icon name="user" size={26} strokeWidth={1.6}/>}
                 placeholder = "Username"
-                onChangeText={value => UsernameRef.current = value}
+                onChangeText={value => usernameRef.current = value}
                />
                <Input icon ={<Icon name="mail" size={26} strokeWidth={1.6}/>}
                 placeholder = "Email Address"
