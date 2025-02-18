@@ -64,7 +64,7 @@ const signup = () => {
              </Text>
                <Input icon ={<Icon name="user" size={26} strokeWidth={1.6}/>}
                 placeholder = "Username"
-                onChangeText={value => usernameRef.current = value}
+                onChangeText={value => usernameRef.current = value.charAt(0).toUpperCase() + value.slice(1)}
                />
                <Input icon ={<Icon name="mail" size={26} strokeWidth={1.6}/>}
                 placeholder = "Email Address"
