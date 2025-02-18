@@ -30,7 +30,6 @@ const login = () => {
       email,
       password
     })
-    console.log("🚀 ~ onSubmit ~ error:", error)
     setLoading(false)
     if(error) {
        Alert.alert("Login", error.message)

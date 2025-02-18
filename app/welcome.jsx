@@ -17,7 +17,7 @@ const welcome = () => {
         <Image style={styles.welcomeImage} resizeMode='contain' source={require("../assets/images/welcome.png")}/>
         {/* title */}
          <View style={{gap:15}}>
-          <Text style={styles.title}>ChitChat 🤖 </Text>
+          <Text style={styles.title}>ChitChat 💬  </Text>
           <Text style={styles.punchline}>Connect. Share. Vibe.!</Text>
          </View>
          {/* footer */}
@@ -56,7 +56,10 @@ const styles = StyleSheet.create({
    width: wp(100)
   },
   title:{
-   color: theme.colors.text,
+    color: 'rgba(0, 5, 102, 1)', 
+    textShadowColor: 'rgba(192, 192, 192, 1)', 
+    textShadowOffset: { width: -2, height: 0 }, 
+    textShadowRadius: 5, 
    fontSize: hp(4),
    textAlign: "center",
    fontWeight: theme.fonts.extraBold
