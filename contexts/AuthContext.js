@@ -10,10 +10,13 @@ export const AuthProvider = ({children}) => {
     setUser(authUser)
   }
 
-  const setUserData = userData => {
+  // const setUserData = userData => {
     
-    setUser({...userData})
-  }
+  //   setUser({...userData})
+  // }
+  const setUserData = userData => {
+    setUser(prev => ({ ...prev, ...userData }));
+  };
 
   return (
     <AuthContext.Provider value ={{user, setAuth,setUserData}}>
