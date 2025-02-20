@@ -18,7 +18,7 @@ import Avatar from '../../components/Avatar'
 const Home = () => {
 const router = useRouter()
 const {user, setAuth} = useAuth();
-console.log("🚀 ~ Home ~ user:", user)
+// console.log("🚀 ~ Home ~ user:", user)
 
   // const onLogout = async() => {
  

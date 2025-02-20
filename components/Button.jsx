@@ -22,7 +22,7 @@ const Button = ({
   }
   if (loading) {
     return (
-      <View style={[styles.button, buttonStyle, {backgroundColor: 'white'}]}>
+      <View style={[styles.button, buttonStyle, {backgroundColor: "#E3E4E5"}]}>
          <Loading/>
       </View>
     )
