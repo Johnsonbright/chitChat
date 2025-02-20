@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import Screenwrapper from '../../components/Screenwrapper'
 import Header from '../../components/Header'
 import { theme } from '../../constants/theme'
@@ -7,10 +7,17 @@ import { hp,wp } from '../../helpers/common'
 import Avatar from '../../components/Avatar'
 import { useAuth } from '../../contexts/AuthContext'
 import RichTextEditor from '../../components/RichTextEditor'
+import { useRouter } from 'expo-router'
 
 const NewPosts = () => {
 
+
   const {user} = useAuth();
+  const bodyRef = useRef('');
+  const editorRef = useRef(null);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null)
   return (
     <Screenwrapper>
       <View style={styles.container}>
@@ -35,7 +42,7 @@ const NewPosts = () => {
              </View>
            </View>
            <View style={styles.textEditor}>
-              <RichTextEditor/>
+           <RichTextEditor ref={editorRef} onChange={(body) => (bodyRef.current = body)} />
            </View>
       </ScrollView>
       </View>
@@ -110,7 +117,9 @@ const styles = StyleSheet.create({
       fontSize: hp(1.7),
       fontWeight: theme.fonts.medium,
   },
-  textEditor: {},
+  textEditor: {
+    minHeight: 285
+  },
   title: {
       color: theme.colors.text,
       fontSize: hp(2.5),
