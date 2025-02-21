@@ -6,6 +6,25 @@ import Avatar from './Avatar'
 import moment from 'moment'
 import Icon from '../assets/icons'
 import RenderHtml from 'react-native-render-html';
+import Image from '../assets/icons/Image'
+import { getSupabaseFileUrl } from '../services/imageService'
+import { Video } from 'expo-av'
+
+const textStyle ={
+    color: theme.colors.dark,
+    fontSize: hp(1.75)
+}
+const tagsStyles = {
+ div: textStyle,
+ p: textStyle,
+ ol: textStyle,
+ h1: {
+  color: theme.colors.dark
+ },
+ h1: {
+  color: theme.colors.dark
+ }
+}
 
 const PostCard = ({
    item,
@@ -13,6 +32,11 @@ const PostCard = ({
    router,
    hasShadow = true
 }) => {
+
+  const onLike = async() => {
+    
+  }
+
   const postDetails = () => {
 
   }
@@ -28,6 +52,8 @@ const shadowStyles = {
 }
 
 const createdAt = moment(item?.created_at).format('MM D Y')
+const liked = false;
+const likes = [];
   return (
     <View style={[styles.container, hasShadow && shadowStyles]}>
        <View style={styles.header}>
@@ -56,13 +82,66 @@ const createdAt = moment(item?.created_at).format('MM D Y')
               <RenderHtml 
                  contentWidth={wp(100)}
                  source={{html: item?.body}}
+                 tagsStyles={tagsStyles}
               />
             )
             
             }
         </View>
-          
+        {/* post image */}
+        {
+          item?.file && item?.file?.includes('postImages') && (
+            <Image
+               source={getSupabaseFileUrl(item?.file)}
+               transition={100}
+               style={styles.postMedia}
+               contentFit="cover"
+            />
+          )
+        }
+        {/* post video */}
+        {
+          item?.file && item?.file.includes('postVideos') && (
+            <Video
+              style={[styles.postMedia, {height:hp(25)}]}
+              source={getSupabaseFileUrl(item?.file)}
+              useNativeControls
+              resizeMode='cover'
+              isLooping
+            />
+          )
+        }
        </View>
+
+       {/* like, comment and share */}
+        <View style={styles.footer}>
+          <View style={styles.footerButton}>
+              <TouchableOpacity onPress={onLike}>
+                  <Icon name="heart" size={23} fill={liked? theme.colors.rose : 'transparent'} color={theme.colors.textLight}/>
+              </TouchableOpacity>
+              <Text style={styles.count}>
+                 {
+                  likes?.length
+                 }
+              </Text>
+          </View>
+          <View style={styles.footerButton}>
+              <TouchableOpacity>
+                  <Icon name="comment" size={23} color={theme.colors.textLight}/>
+              </TouchableOpacity>
+              <Text style={styles.count}>
+                 {
+                 0
+                 }
+              </Text>
+          </View>
+          <View style={styles.footerButton}>
+              <TouchableOpacity>
+                  <Icon name="share" size={23} color={theme.colors.textLight}/>
+              </TouchableOpacity>
+             
+          </View>
+        </View>
     </View>
   )
 }
