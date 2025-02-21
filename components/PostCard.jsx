@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { theme } from '../constants/theme'
 import { hp,wp } from '../helpers/common'
 import Avatar from './Avatar'
@@ -9,6 +9,7 @@ import RenderHtml from 'react-native-render-html';
 import Image from '../assets/icons/Image'
 import { getSupabaseFileUrl } from '../services/imageService'
 import { Video } from 'expo-av'
+import { createPostLike, removePostLike } from '../services/postService'
 
 const textStyle ={
     color: theme.colors.dark,
@@ -33,8 +34,43 @@ const PostCard = ({
    hasShadow = true
 }) => {
 
+  // Likes
+  const [likes, setLikes] = useState([])
+   useEffect(() => {
+      setLikes(item?.postLikes)
+     
+   },[])
+     
+  
+
   const onLike = async() => {
-    
+
+    if(liked) {
+      // remove like
+      let updatedLikes = likes.filter(like => like.userId != currentUser?.id)
+      console.log("🚀 ~ onLike ~ updatedLikes:", updatedLikes)
+
+      setLikes([...updatedLikes])
+      let res = await removePostLike(item?.id, currentUser?.id);
+      console.log("🚀 ~ remove like:", res)
+      if(!res.success) {
+        Alert.alert("Post ", "Something went wrong")
+       }
+
+    }else {
+      let data = {
+        userId: currentUser?.id,
+        postId: item?.id
+      }
+       setLikes([...likes, data])
+      let res = await createPostLike(data);
+      console.log("🚀 ~ added like:", res)
+      if(!res.success) {
+       Alert.alert("Post ", "Something went wrong")
+      }
+    }
+ 
+     
   }
 
   const postDetails = () => {
@@ -51,9 +87,14 @@ const shadowStyles = {
    elevation:1
 }
 
-const createdAt = moment(item?.created_at).format('MM D Y')
-const liked = false;
-const likes = [];
+const createdAt = moment(item?.created_at).format('MM D Y');
+
+const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: false;
+
+
+
+
+
   return (
     <View style={[styles.container, hasShadow && shadowStyles]}>
        <View style={styles.header}>
@@ -117,7 +158,7 @@ const likes = [];
         <View style={styles.footer}>
           <View style={styles.footerButton}>
               <TouchableOpacity onPress={onLike}>
-                  <Icon name="heart" size={23} fill={liked? theme.colors.rose : 'transparent'} color={theme.colors.textLight}/>
+                  <Icon name="heart" size={23} fill={liked? theme.colors.rose : 'transparent'} color={liked ? theme.colors.rose : theme.colors.textLight}/>
               </TouchableOpacity>
               <Text style={styles.count}>
                  {
