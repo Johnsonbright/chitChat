@@ -1,15 +1,16 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { theme } from '../constants/theme'
-import { hp,wp } from '../helpers/common'
+import { hp,stripHtmlTags,wp } from '../helpers/common'
 import Avatar from './Avatar'
 import moment from 'moment'
 import Icon from '../assets/icons'
 import RenderHtml from 'react-native-render-html';
 import Image from '../assets/icons/Image'
-import { getSupabaseFileUrl } from '../services/imageService'
+import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
 import { Video } from 'expo-av'
 import { createPostLike, removePostLike } from '../services/postService'
+import Loading from './Loading'
 
 const textStyle ={
     color: theme.colors.dark,
@@ -31,17 +32,17 @@ const PostCard = ({
    item,
    currentUser,
    router,
-   hasShadow = true
+   hasShadow = true,
+   showMoreIcon = true
 }) => {
 
   // Likes
   const [likes, setLikes] = useState([])
+  const [loading, setLoading] = useState(false)
    useEffect(() => {
-      setLikes(item?.postLikes)
+      setLikes(item?.postLikes || [])
      
    },[])
-     
-  
 
   const onLike = async() => {
 
@@ -73,8 +74,27 @@ const PostCard = ({
      
   }
 
+  // share
+  const onShare = async() => {
+      let content = {message: stripHtmlTags(item?.body) };
+      if(item?.file) {
+        // download the file then share the local uri
+        setLoading(true)
+        let url = await downloadFile(getSupabaseFileUrl(item?.file).uri)
+        setLoading(false)
+        console.log("🚀 ~ onShare ~  url:",  url)
+        content.url = url
+      
+      }
+      Share.share(content);
+   
+
+  }
+
   const postDetails = () => {
 
+    if(!showMoreIcon) return null
+     router.push({pathname: 'postDetails', params: {postId: item?.id}})
   }
 
 const shadowStyles = {
@@ -87,12 +107,13 @@ const shadowStyles = {
    elevation:1
 }
 
-const createdAt = moment(item?.created_at).format('MM D Y');
+const createdAt = moment(item?.created_at)?.format('MM D Y');
 
-const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: false;
+// const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: false;
 
+const liked = (likes || []).filter(like => like?.userId === currentUser?.id)[0] ? true : false;
 
-
+// console.log('Post item comments', item)
 
 
   return (
@@ -110,10 +131,14 @@ const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: 
                  <Text style={styles.postTime}>{createdAt}</Text>
               </View>
           </View>
-
-          <TouchableOpacity onPress={postDetails}>
-             <Icon name="threeDotsHorizontal" size={hp(3.4)} strokeWidth={3} color={theme.colors.text}/>
-          </TouchableOpacity>
+           {
+            showMoreIcon && (
+              <TouchableOpacity onPress={postDetails}>
+              <Icon name="threeDotsHorizontal" size={hp(3.4)} strokeWidth={3} color={theme.colors.text}/>
+           </TouchableOpacity>
+            )
+           }
+         
        </View>
        {/* Post body and media here */}
        <View styles={styles.content}>
@@ -167,19 +192,25 @@ const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: 
               </Text>
           </View>
           <View style={styles.footerButton}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={postDetails}>
                   <Icon name="comment" size={23} color={theme.colors.textLight}/>
               </TouchableOpacity>
               <Text style={styles.count}>
                  {
-                 0
+                 item.comments[0]?.count
                  }
               </Text>
           </View>
           <View style={styles.footerButton}>
-              <TouchableOpacity>
+            {
+               loading ? (
+                <Loading size="small"/>
+               ):
+               <TouchableOpacity onPress={onShare}>
                   <Icon name="share" size={23} color={theme.colors.textLight}/>
               </TouchableOpacity>
+            }
+              
              
           </View>
         </View>
@@ -231,6 +262,8 @@ const styles = StyleSheet.create({
   },
   postBody: {
       marginLeft: 5,
+      marginBottom: 10,
+      padding:10
   },
   postMedia: {
       borderCurve: 'continuous',
