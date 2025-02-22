@@ -14,6 +14,7 @@ import PostCard from '../../components/PostCard'
 import Loading from '../../components/Loading'
 import { getUserData } from '../../services/userService'
 import { StatusBar } from 'expo-status-bar'
+import { updateLanguageServiceSourceFile } from 'typescript'
 
 
 var limit = 0
@@ -25,12 +26,36 @@ const [posts,setPosts] = useState([])
 const [hasMore, setHasMore] = useState(true)
 
 const handlePostEvent = async (payload) => {
+  console.log("🚀 ~ handlePostEvent ~ payload:", payload)
   if(payload.eventType == 'INSERT' && payload?.new?.id){
     let newPost ={...payload.new};
     let res = await getUserData(newPost?.userId)
+    newPost.postLikes = [];
+    newPost.comments = [{count: 0}]
     newPost.user = res.success? res.data: {}
     setPosts(prevPosts => [newPost, ...prevPosts]);
   }
+  if(payload.eventType =="DELETE" && payload.old.id){
+    setPosts(prevPosts => {
+      let updatedPosts = prevPosts.filter(post => post.id != payload.old.id);
+      return updatedPosts;
+
+    })
+  }
+    if(payload.eventType == 'UPDATE' && payload?.new?.id){
+     setPosts(prevPosts => {
+      let updatedPosts = prevPosts.map(post => {
+        if(post.id == payload.new.id) {
+           post.body = payload.new.body;
+           post.file = payload.new.file;
+        }
+        return post;
+      });
+      return updatedPosts
+     })
+ 
+    }
+  
 }
 
 useEffect(() => {

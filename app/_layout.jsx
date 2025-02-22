@@ -51,9 +51,11 @@ const MainLayout = () => {
      >
       <Stack.Screen
         name="(main)/postDetails"
-        options={{
-          presentation: 'modal'
-        }}
+        options={{ 
+          presentation: 'modal', // 👈 This makes it a modal
+          headerShown: false,
+          animation: "slide_from_bottom" // 👈 Optional for better effect
+        }} 
       />
      </Stack>
   )

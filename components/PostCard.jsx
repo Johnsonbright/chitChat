@@ -33,7 +33,10 @@ const PostCard = ({
    currentUser,
    router,
    hasShadow = true,
-   showMoreIcon = true
+   showMoreIcon = true,
+   showDelete =false,
+   onDelete = () => {},
+   onEdit = () => {}
 }) => {
 
   // Likes
@@ -42,6 +45,7 @@ const PostCard = ({
    useEffect(() => {
       setLikes(item?.postLikes || [])
      
+    
    },[])
 
   const onLike = async() => {
@@ -107,13 +111,30 @@ const shadowStyles = {
    elevation:1
 }
 
+const handlePostDelete = () => {
+  Alert.alert('Confirm', "Are you sure you want to delete",[
+    {
+      text: 'Cancel',
+      onPress: () => console.log('modal cancelled'),
+      style: "cancel"
+    },
+    {
+      text: "Delete",
+      onPress: () => onDelete(item),
+      style: 'destructive'
+    },
+  ],
+  {cancelable: true}
+)
+}
+
 const createdAt = moment(item?.created_at)?.format('MM D Y');
 
 // const liked = likes.filter(like => like?.userId === currentUser?.id)[0] ? true: false;
 
 const liked = (likes || []).filter(like => like?.userId === currentUser?.id)[0] ? true : false;
 
-// console.log('Post item comments', item)
+
 
 
   return (
@@ -137,6 +158,18 @@ const liked = (likes || []).filter(like => like?.userId === currentUser?.id)[0] 
               <Icon name="threeDotsHorizontal" size={hp(3.4)} strokeWidth={3} color={theme.colors.text}/>
            </TouchableOpacity>
             )
+           }
+           {
+             showDelete && currentUser.id == item?.userId && (
+              <View style={styles.actions}>
+              <TouchableOpacity onPress={() => onEdit(item)}>
+                 <Icon name = "edit" size={hp(2.5)} strokeWidth={3} color={theme.colors.text}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handlePostDelete}>
+                 <Icon name = "delete" size={hp(2.5)} strokeWidth={3} color={theme.colors.text}/>
+              </TouchableOpacity>
+           </View>
+             )
            }
          
        </View>
