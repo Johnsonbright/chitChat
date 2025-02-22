@@ -1,5 +1,5 @@
 import { Alert, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Screenwrapper from '../../components/Screenwrapper'
 import Header from '../../components/Header'
 import { theme } from '../../constants/theme'
@@ -7,7 +7,7 @@ import { hp,wp } from '../../helpers/common'
 import Avatar from '../../components/Avatar'
 import { useAuth } from '../../contexts/AuthContext'
 import RichTextEditor from '../../components/RichTextEditor'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import Icon from '../../assets/icons'
 import Button from "../../components/Button"
 import * as ImagePicker from 'expo-image-picker';
@@ -18,6 +18,8 @@ import { createOrUpdatePost } from '../../services/postService'
 
 const NewPosts = () => {
 
+const post = useLocalSearchParams()
+  console.log("🚀 ~ NewPosts ~ post:", post)
 
   const {user} = useAuth();
   const bodyRef = useRef('');
@@ -25,6 +27,19 @@ const NewPosts = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null)
+
+  useEffect(() => {
+    if(post && post.id) {
+      bodyRef.current = post.body;
+      setFile(post.file || null);
+      setTimeout(() => {
+        editorRef?.current.setContentHTML(post.body)
+      },300)
+        // console.log("🚀 ~ setTimeout ~  editorRef?.current.setContentHTML(post.body):",  editorRef?.current.setContentHTML(post.body))
+      
+     
+    }
+  },[])
 
   const onPick = async (isImage) => {
     try {
@@ -87,6 +102,7 @@ const onSubmit = async() => {
         body:bodyRef.current,
         userId: user?.id
     }
+    if(post && post.id) data.id = post.id
 
     // create post
     setLoading(true);
@@ -104,7 +120,7 @@ const onSubmit = async() => {
 
     }
 }
-console.log("File Uri", getFileUri(file))
+// console.log("File Uri", getFileUri(file))
   return (
     <Screenwrapper>
       <View style={styles.container}>
@@ -173,7 +189,7 @@ console.log("File Uri", getFileUri(file))
       </ScrollView>
        <Button 
           buttonStyle={{height:hp(6.2)}}
-          title="Post"
+          title={post && post.id? "Update": "Post"}
           loading={loading}
           hasShadow={false}
           onPress={onSubmit}

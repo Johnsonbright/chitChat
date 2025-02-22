@@ -1,7 +1,7 @@
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, {useState, useEffect, useRef} from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { createComment, fetchPostDetails, removeComment } from '../../services/postService';
+import { createComment, fetchPostDetails, removeComment, removePost } from '../../services/postService';
 import { hp,wp } from '../../helpers/common';
 import { theme } from '../../constants/theme';
 import PostCard from '../../components/PostCard';
@@ -11,6 +11,10 @@ import Input from "../../components/Input";
 import Icon from '../../assets/icons';
 import CommentItem from '../../components/CommentItem';
 import moment from 'moment';
+import { getUserData } from '../../services/userService';
+import { supabase } from '../../lib/supabase';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { createNotification } from '../../services/notificationService';
 
 const postDetails = () => {
 
@@ -20,15 +24,88 @@ const postDetails = () => {
  
 
   const [post, setPost] = useState(null);
-  console.log("🚀 ~ postDetails ~ post:", post)
+  // console.log("🚀 ~ postDetails ~ post:", post)
   const[startLoading, setStartLoading] = useState(true);
   const [loading, setLoading] = useState(false)
   const inputRef= useRef(null)
   const commentRef = useRef('')
 
-  useEffect(()=> {
-      getPostDetails()
-  }, [postId])
+// ✅ comment section
+  // const handleNewComment = async(payload) => {
+  //   console.log("get new comment", payload.new)
+
+  //   if(payload.new) {
+  //     let newComment = {...payload.new};
+  //     let res = await getUserData(newComment.userId);
+  //     newComment.user = res.success? res.data: {};
+  //     setPost(prevPost => {
+  //       return {
+  //         ...prevPost,
+  //         comments: [newComment, ...prevPost.comments]
+  //       }
+  //     })
+  //   }
+  // }
+
+  // useEffect(() => {
+
+  //   getPostDetails()
+
+  //     let commentChannel = supabase
+  //     .channel('comments')
+  //     .on('postgres_changes',
+  //        {event: "INSERT",
+  //          schema: 'public', 
+  //          table:'comments',
+  //          filter: `postId=eq.${postId}`
+  //        }, handleNewComment)
+  //     .subscribe();
+
+
+  //      return () => {
+  //       supabase.removeChannel(commentChannel)
+  //      }
+  //   },[])
+
+  const handleNewComment = async (payload) => {
+    console.log("get new comment", payload.new);
+  
+    if (payload.new) {
+      let newComment = { ...payload.new };
+      let res = await getUserData(newComment.userId);
+      newComment.user = res.success ? res.data : {};
+  
+      setPost((prevPost) => {
+        return {
+          ...prevPost,
+          comments: prevPost?.comments ? [newComment, ...prevPost.comments] : [newComment],
+        };
+      });
+    }
+  };
+  
+  useEffect(() => {
+    getPostDetails();
+  
+    const commentChannel = supabase
+      .channel('comments')
+      .on(
+        'postgres_changes',
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "comments",
+          filter: `postId=eq.${postId}`,
+        },
+        (payload) => handleNewComment(payload) 
+      )
+      .subscribe();
+  
+    return () => {
+      supabase.channel('comments').unsubscribe(); // ✅ Proper cleanup
+    };
+  }, [postId]); // ✅ Depend on postId to prevent stale state
+  
 
   const getPostDetails = async() => {
     // fetch post details here
@@ -55,6 +132,17 @@ const postDetails = () => {
        setLoading(false)
        if(res.success) {
         // send notification to user
+        if(user.id != post.userId){
+          //send notification
+          let notify ={
+            senderId: user.id,
+            receiverId: post.userId,
+            title: 'commented on your post',
+            data: JSON.stringify({postId: post.id, commentId: res?.data?.id})
+          }
+         await createNotification(notify);
+        }
+          
          inputRef?.current?.clear();
          commentRef.current ="";
        }else{
@@ -93,10 +181,28 @@ const postDetails = () => {
     );
   }
 
- 
+  // Delete and Edit Post
+
+  const onDeletePost = async(item) => {
+// delete post here
+let res = await removePost(post.id);
+if(res.success) {
+  router.back();
+}else{
+  Alert.alert("Post", res.msg);
+}
+
+  
+  }
+
+ const onEditPost = async(item) => {
+  router.back()
+ router.push({pathname: 'newPosts', params: {...item}})
+
+ }
   
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.list}>
           <PostCard
              item={{...post, comments: [{count: post.comments?.length}]}}
@@ -104,6 +210,9 @@ const postDetails = () => {
              router={router}
              hasShadow={false}
              showMoreIcon={false}
+             showDelete={true}
+             onDelete={onDeletePost}
+             onEdit={onEditPost}
           />
 
           {/* comments input*/}
@@ -153,7 +262,7 @@ const postDetails = () => {
             </View>
       </ScrollView>
      
-    </View>
+    </SafeAreaView >
   )
 }
 
