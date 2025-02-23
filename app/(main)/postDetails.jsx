@@ -19,7 +19,9 @@ import { createNotification } from '../../services/notificationService';
 const postDetails = () => {
 
   const router = useRouter();
-  const {postId} = useLocalSearchParams();
+  
+  const {postId, commentId} = useLocalSearchParams();
+ 
   const {user} = useAuth()
  
 
@@ -129,6 +131,7 @@ const postDetails = () => {
       //  create comments
        setLoading(true);
        let res = await createComment(data);
+      
        setLoading(false)
        if(res.success) {
         // send notification to user
@@ -140,7 +143,7 @@ const postDetails = () => {
             title: 'commented on your post',
             data: JSON.stringify({postId: post.id, commentId: res?.data?.id})
           }
-         await createNotification(notify);
+          createNotification(notify);
         }
           
          inputRef?.current?.clear();
@@ -243,14 +246,17 @@ if(res.success) {
             {/* comment list */}
             <View style={{marginVertical: 15, gap: 17}}>
                {
-                post?.comments?.map(comment => 
-                  <CommentItem
-                    key={comment?.id.toString()}
-                     item={comment}
-                     cancelDelete = {user.id == comment.userId || user.id == post.userId}
-                     onDelete={onDelete}
-                  />
-                )
+                post?.comments?.map(comment => {
+                  return <CommentItem
+                    	key={comment?.id.toString()}
+                     	item={comment}
+                     	cancelDelete = {user.id == comment.userId || user.id == post.userId}
+                     	highlight={comment.id == commentId}
+                     	onDelete={onDelete}
+                  	/>
+                    
+                })
+                
                }
                {
                 post?.comments?.length ==0 && (

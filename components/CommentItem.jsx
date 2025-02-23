@@ -10,7 +10,8 @@ const CommentItem = (
   {
     item,
     cancelDelete = false,
-    onDelete = () => {}
+    onDelete = () => {},
+    highlight =false
   }
 ) => {
 
@@ -31,15 +32,16 @@ const CommentItem = (
     )
   }
   const createdAt = moment(item?.created_at).format('MMM-D-Y')
+  // console.log("Item ////////////////////sdad", item.id)
   return (
     <View style={styles.container}> 
       <Avatar
        uri={item?.user?.image}
       />
-      <View style={styles.content}>
+      <View style={[styles.content, highlight && styles.highlight]}>
          <View style={{flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
             <View style={styles.nameContainer}>
-            <Text style={styles.nameContainer}>
+            <Text style={styles.text}>
                 {
                   item?.user?.username
                 }

@@ -45,6 +45,7 @@ const PostCard = ({
    useEffect(() => {
       setLikes(item?.postLikes || [])
      
+ 
     
    },[])
 
@@ -98,7 +99,7 @@ const PostCard = ({
   const postDetails = () => {
 
     if(!showMoreIcon) return null
-     router.push({pathname: 'postDetails', params: {postId: item?.id}})
+     router.push({pathname: '/(main)/postDetails', params: {postId: item?.id}})
   }
 
 const shadowStyles = {
