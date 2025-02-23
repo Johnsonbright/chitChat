@@ -24,6 +24,7 @@ const router = useRouter()
 const {user, setAuth} = useAuth();
 const [posts,setPosts] = useState([])
 const [hasMore, setHasMore] = useState(true)
+const [notificationCount, setNotificationCount] = useState(0)
 
 const handlePostEvent = async (payload) => {
   console.log("🚀 ~ handlePostEvent ~ payload:", payload)
@@ -58,15 +59,59 @@ const handlePostEvent = async (payload) => {
   
 }
 
+const handleNewNotification = (payload) => {
+  console.log("🚀 ~ handleNewNotification ~ payload:", payload)
+  if (payload.eventType === 'INSERT' && payload?.new?.id) {
+      setNotificationCount((prev) => prev + 1);
+  }
+};
+
+
+// useEffect(() => {
+// getPost()
+// console.log('user.id', user?.id)
+//   let postChannel = supabase.channel('posts')
+//   .on('postgres_changes', {event: '*', schema: 'public', table:'posts'}, handlePostEvent)
+//   .subscribe();
+
+
+//   let notificationChannel = supabase
+//   .channel('notifications')
+//   .on(
+//       'postgres_changes',
+//       { event: 'INSERT', filter: `receiverId=eq.${user?.id}`, schema: 'public', table: 'notifications' },
+//       handleNewNotification,
+//   )
+//   .subscribe();
+  
+//    return () => {
+//     supabase.removeChannel(postChannel)
+//     supabase.removeChannel(notificationChannel)
+//    }
+// },[])
+
 useEffect(() => {
-getPost()
+  getPost();
+
   let postChannel = supabase.channel('posts')
-  .on('postgres_changes', {event: '*', schema: 'public', table:'posts'}, handlePostEvent)
-  .subscribe();
-   return () => {
-    supabase.removeChannel(postChannel)
-   }
-},[])
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, handlePostEvent)
+    .subscribe();
+
+  let notificationChannel = supabase
+    .channel('notifications')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'notifications', filter: `receiverId=eq.'${user?.id}'` },
+      handleNewNotification
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(postChannel);
+    supabase.removeChannel(notificationChannel);
+  };
+}, [user?.id]); // Ensure effect runs when user.id is available
+
 
 const getPost = async() => {
 //  call api post
@@ -78,17 +123,6 @@ if(res.success){
     setPosts(res.data)
 }
 }
-
-
-// console.log("🚀 ~ Home ~ user:", user)
-
-  // const onLogout = async() => {
- 
-  //   const {error} = await supabase.auth.signOut()
-  //   if(error) {
-  //     Alert.alert("Sign Out", error.message)
-  //   }
-  // }
   return (
      <Screenwrapper bg="#E3E4E5">
       <StatusBar backgroundColor="gray"/>
@@ -97,8 +131,17 @@ if(res.success){
             <View style={styles.header}>
                <Text style={styles.title}>ChitChat 💬</Text>
                <View style={styles.icons}>
-                  <Pressable onPress={() => router.push("notifications")}>
+                  <Pressable onPress={() => {
+                    setNotificationCount(0)
+                    router.push("notifications")}}>
                      <Icon name="heart" size={hp(3.2)} strokeWidth={2} color={theme.colors.text}/>
+                     {
+                      notificationCount > 0 && (
+                        <View style={styles.pill}>
+                          <Text style={styles.pillText}>{notificationCount}</Text>
+                        </View>
+                      )
+                     }
                   </Pressable>
                   <Pressable onPress={() => router.push("newPosts")}>
                      <Icon name="plus" size={hp(3.2)} strokeWidth={2} color={theme.colors.text}/>
@@ -147,7 +190,6 @@ if(res.success){
        </View>
         
 
-       {/* <Button title ="Log out" onPress={onLogout}/> */}
      </Screenwrapper>
      
    

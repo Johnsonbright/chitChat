@@ -26,6 +26,7 @@ const Notifications = () => {
 
   const getNotifications = async () => {
     let res = await fetchNotifications(user.id)
+    // console.log("🚀 ~ getNotifications ~ resb :", res.data )
    if(res.success) setNotifications(res.data)
   }
   
@@ -39,14 +40,14 @@ const Notifications = () => {
                 return (
                   <NotificationItem
                     item={item}
-                    key={item.id}
+                    key={item?.id}
                     router={router}
                   />
                 )
               })
              }
              {
-              notifications.length = 0 && (
+              notifications.length === 0 && (
                 <Text style={styles.noData}> No notifications yet</Text>
               )
              }
@@ -54,6 +55,7 @@ const Notifications = () => {
       </View>
    </Screenwrapper>
   )
+          
 }
 
 export default Notifications
