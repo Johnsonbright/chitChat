@@ -1,3 +1,18 @@
+ChitChat - A Social Media App
+ChitChat is a React Native-based social media platform where users can sign up, create posts, comment, and receive real-time notifications using Supabase for database management and authentication.
+
+Features
+✅ User authentication (Sign up & Sign in)
+✅ Create, edit, and delete posts
+✅ Update profile settings
+✅ Comment on posts
+✅ Real-time notifications using Supabase
+
+Tech Stack
+React Native - Frontend framework
+Supabase - Backend & database
+Expo - Development environment
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
