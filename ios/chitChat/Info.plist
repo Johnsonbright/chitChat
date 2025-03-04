@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.uzoma333.chitChat</string>
+          <string>com.uzoma333.chitchat</string>
         </array>
       </dict>
     </array>

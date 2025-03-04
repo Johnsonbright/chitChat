@@ -1,4 +1,4 @@
-package com.uzoma333.chitChat
+package com.uzoma333.chitchat
 
 import android.app.Application
 import android.content.res.Configuration

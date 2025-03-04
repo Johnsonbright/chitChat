@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.chitchat"
+    namespace 'com.uzoma333.chitchat'
     defaultConfig {
-        applicationId 'com.uzoma333.chitChat'
+        applicationId 'com.uzoma333.chitchat'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

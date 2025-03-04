@@ -32,6 +32,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-chitChat/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		02D53BE82D244EB4B3FFB7D1 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "chitChat/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		F93139A7132D41918F3E5F78 /* chitChat-Bridging-Header.h */ = {isa = PBXFileReference; name = "chitChat-Bridging-Header.h"; path = "chitChat/chitChat-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +58,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				02D53BE82D244EB4B3FFB7D1 /* noop-file.swift */,
+				F93139A7132D41918F3E5F78 /* chitChat-Bridging-Header.h */,
 			);
 			name = chitChat;
 			sourceTree = "<group>";
@@ -196,6 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+				E4E85075E5104D99B38A7912 /* chitChat-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,13 +302,14 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.uzoma333.chitChat";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.uzoma333.chitchat";
 				PRODUCT_NAME = "chitChat";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				CODE_SIGN_ENTITLEMENTS = chitChat/chitChat.entitlements;
+				SWIFT_OBJC_BRIDGING_HEADER = chitChat/chitChat-Bridging-Header.h;
 			};
 			name = Debug;
 		};
@@ -325,12 +329,13 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.uzoma333.chitChat";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.uzoma333.chitchat";
 				PRODUCT_NAME = "chitChat";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				CODE_SIGN_ENTITLEMENTS = chitChat/chitChat.entitlements;
+				SWIFT_OBJC_BRIDGING_HEADER = chitChat/chitChat-Bridging-Header.h;
 			};
 			name = Release;
 		};

@@ -1,4 +1,4 @@
-package com.uzoma333.chitChat
+package com.uzoma333.chitchat
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

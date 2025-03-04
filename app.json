@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.uzoma333.chitChat"
+      "bundleIdentifier": "com.uzoma333.chitchat"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.uzoma333.chitChat"
+      "package": "com.uzoma333.chitchat"
     },
     "web": {
       "bundler": "metro",
