@@ -84,7 +84,7 @@ async function registerForPushNotificationsAsync() {
 }
 
 // Main App Component
-export default function App() {
+export default function PushNotification() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(null);
   const notificationListener = useRef(null);
