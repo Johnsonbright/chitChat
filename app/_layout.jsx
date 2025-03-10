@@ -4,14 +4,14 @@ import { Stack, useRouter } from 'expo-router'
 import { AuthProvider, useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { getUserData } from '../services/userService'
-import PushNotification from '../components/PushNotification'
+import { usePushNotifications } from '../components/usePushNotification'
 
 LogBox.ignoreLogs(['Warning: TNodeChildrenRenderer', 'Warning: MemoizedTNodeRenderer:', 'Warning: TRenderEngineProvider:'])
 
 const _layout = () =>{
+ const expoPushToken = usePushNotifications();
   return (
      <AuthProvider>
-       <PushNotification/>
        <MainLayout/>
      </AuthProvider>
   )
