@@ -39,10 +39,10 @@ const Login = () => {
   };
 
   return (
-    <Screenwrapper bg="white">
+    <Screenwrapper bg="white" >
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <Text style={styles.welcomeText}>Hey, let's pick up where we left off</Text>
+        <Text style={styles.welcomeText}><Text style={{color: "#007AFF"}}>Hey</Text>, let's pick up where we left off</Text>
 
         {/* Form */}
         <View style={styles.form}>
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 45,
     paddingHorizontal: wp(5),
+    paddingTop:30
   },
   forgotPassword: {
     color: theme.colors.text,
