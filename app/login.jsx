@@ -42,7 +42,7 @@ const Login = () => {
     <Screenwrapper bg="white" >
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <Text style={styles.welcomeText}><Text style={{color: "#007AFF"}}>Hey</Text>, let's pick up where we left off</Text>
+        <Text style={styles.welcomeText}><Text style={{color: "#007AFF"}}>Hey</Text>, Welcome!</Text>
 
         {/* Form */}
         <View style={styles.form}>

@@ -22,6 +22,7 @@ var limit = 0
 const Home = () => {
 const router = useRouter()
 const {user, setAuth} = useAuth();
+console.log("🚀 ~ Home ~ user:", user)
 const [posts,setPosts] = useState([])
 const [hasMore, setHasMore] = useState(true)
 const [notificationCount, setNotificationCount] = useState(0)
