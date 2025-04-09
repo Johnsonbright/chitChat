@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     borderColor: theme.radius.text,
     borderRadius: theme.radius.xxl,
     borderCurve: "continuous",
-    paddingHorizontal: 18,
+    paddingHorizontal: 17.5,
     gap:12
 
   }
